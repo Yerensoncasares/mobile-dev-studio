@@ -1,12 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
 #######################################################
-#  🎨 MOBILE DEV STUDIO - Lightweight VNC Installer v1.0
+#  🎨 MOBILE DEV STUDIO - Lightweight VNC Installer v1.1
 #  
 #  Features:
 #  - TigerVNC Server (Optimized for TV/PC Clients)
 #  - Forced llvmpipe software rendering (Max stability)
-#  - Focused on Web Dev & Godot 3.3 (Zero bloat)
-#  - Box64 Integration for ARM64 running Godot x86_64
+#  - Focused on Web Dev & Godot 3 (Zero bloat, Zero Emulation)
 #  
 #  Based on: Tech Jarves UI structure
 #######################################################
@@ -86,13 +85,13 @@ show_banner() {
     cat << 'BANNER'
     ╔════════════════════════════════════════╗
     ║                                        ║
-    ║   🚀  MOBILE DEV STUDIO v1.0  🚀       ║
+    ║   🚀  MOBILE DEV STUDIO v1.1  🚀       ║
     ║      (Lightweight VNC Edition)         ║
     ║                                        ║
     ╚════════════════════════════════════════╝
 BANNER
     echo -e "${NC}"
-    echo -e "${WHITE}         Web Dev + Godot 3.3 Environment${NC}"
+    echo -e "${WHITE}         Web Dev + Godot 3 Native ARM64${NC}"
     echo ""
 }
 
@@ -134,7 +133,7 @@ step_repos() {
     echo ""
     
     install_pkg "x11-repo" "X11 Repository"
-    install_pkg "tur-repo" "TUR Repository (Firefox, VS Code, Box64)"
+    install_pkg "tur-repo" "TUR Repository (Firefox, VS Code, Godot)"
 }
 
 # ============== STEP 3: INSTALL TIGERVNC SERVER ==============
@@ -180,31 +179,17 @@ step_apps() {
     install_pkg "curl" "cURL"
 }
 
-# ============== STEP 7: INSTALL GODOT 3.3 ==============
+# ============== STEP 7: INSTALL GODOT 3 (NATIVE) ==============
 step_godot() {
     update_progress
-    echo -e "${PURPLE}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Downloading Godot 3.3.4 & Box64...${NC}"
+    echo -e "${PURPLE}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Installing Godot 3 (Native ARM64)...${NC}"
     echo ""
     
-    # Instalamos Box64 para poder emular binarios de PC (x86_64) en ARM64
-    install_pkg "box64" "Box64 (x86_64 Emulator)"
+    # SOLUCIÓN: Instalamos el paquete nativo 'godot3' del repositorio TUR.
+    # Esto evita usar Box64 que saturaba la RAM y mataba el servidor VNC.
+    install_pkg "godot3" "Godot 3 Engine (Native ARM64)"
     
-    mkdir -p ~/Godot
-    cd ~/Godot
-    
-    (wget -q --show-progress https://downloads.tuxfamily.org/godotengine/3.3.4/Godot_v3.3.4-stable_x11.64.zip -O godot.zip > /dev/null 2>&1) &
-    spinner $! "Downloading Godot 3.3.4 ZIP..."
-    
-    (unzip -o godot.zip > /dev/null 2>&1) &
-    spinner $! "Extracting Godot files..."
-    
-    # Renombrar ejecutable
-    mv Godot_v3.3.4-stable_x11.64 godot3.3 2>/dev/null
-    chmod +x godot3.3 2>/dev/null
-    rm godot.zip 2>/dev/null
-    
-    cd ~
-    echo -e "  ${GREEN}✓${NC} Godot 3.3.4 ready in ~/Godot/ (Powered by Box64)"
+    echo -e "  ${GREEN}✓${NC} Godot 3 native installed successfully (Ultra stable!)"
 }
 
 # ============== STEP 8: CREATE LAUNCHER SCRIPTS ==============
@@ -329,12 +314,12 @@ Type=Application
 Categories=Development;
 EOF
     
-    # Godot 3.3 (Forced GLES2 + Box64 emulation)
-    cat > ~/Desktop/Godot_3.3.desktop << 'EOF'
+    # Godot 3 Native (Using GLES2 for llvmpipe stability)
+    cat > ~/Desktop/Godot_3.desktop << 'EOF'
 [Desktop Entry]
-Name=Godot 3.3
+Name=Godot 3
 Comment=Game Engine
-Exec=box64 /data/data/com.termux/files/home/Godot/godot3.3 --video-driver GLES2
+Exec=godot3 --video-driver GLES2
 Icon=godot
 Type=Application
 Categories=Development;
@@ -399,7 +384,7 @@ COMPLETE
     echo -e "${CYAN}📦 INSTALLED TOOLS:${NC}"
     echo -e "   • Firefox (Navegador)"
     echo -e "   • VS Code (Optimizado para no crashear)"
-    echo -e "   • Godot 3.3.4 (Emulado con Box64 y GLES2)"
+    echo -e "   • Godot 3 (Nativo ARM64, sin emulaciones pesadas)"
     echo -e "   • Git & Node.js (Esenciales Web)"
     echo -e "   • XFCE4 + TigerVNC (Entorno gráfico ligero)"
     echo ""
@@ -420,7 +405,7 @@ main() {
     show_banner
     
     echo -e "${WHITE}  This script will install a lightweight Linux desktop (VNC)${NC}"
-    echo -e "${WHITE}  focused on Web Development and Godot 3.3.${NC}"
+    echo -e "${WHITE}  focused on Web Development and Godot 3 (Native).${NC}"
     echo ""
     echo -e "${GRAY}  Estimated time: 5-10 minutes (depends on internet speed)${NC}"
     echo ""
