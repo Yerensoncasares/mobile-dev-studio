@@ -18,10 +18,10 @@ A diferencia de otros scripts cargados de herramientas de ciberseguridad o pesad
 
 Ejecuta el siguiente comando en tu terminal de Termux:
 ```
-curl -sL https://raw.githubusercontent.com/TU_USUARIO/mobile-dev-studio/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
+curl -sL https://raw.githubusercontent.com/Yerensoncasares/mobile-dev-studio/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 ```
 
 o usa wget
 ```
-wget https://raw.githubusercontent.com/TU_USUARIO/mobile-dev-studio/main/install.sh && chmod +x install.sh && ./install.sh
+wget https://raw.githubusercontent.com/Yerensoncasares/mobile-dev-studio/main/install.sh && chmod +x install.sh && ./install.sh
 ```
