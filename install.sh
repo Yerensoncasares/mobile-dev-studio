@@ -1,4 +1,4 @@
-```bash
+  bash
 #!/data/data/com.termux/files/usr/bin/bash
 #######################################################
 #  🎨 MOBILE DEV STUDIO - Ultimate VNC Installer v2.0
@@ -482,4 +482,4 @@ main() {
 
 # ============== RUN ==============
 main
-```
+
