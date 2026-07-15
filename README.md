@@ -21,7 +21,7 @@ Ejecuta el siguiente comando en tu terminal de Termux:
 curl -sL https://raw.githubusercontent.com/Yerensoncasares/mobile-dev-studio/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 ```
 
-También, con wget
+O usando wget
 ```
 wget https://raw.githubusercontent.com/Yerensoncasares/mobile-dev-studio/main/install.sh && chmod +x install.sh && ./install.sh
 ```
