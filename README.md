@@ -9,7 +9,7 @@ A diferencia de otros scripts sobrecargados con herramientas pesadas o complejas
 ## ✨ Características principales
 
 * **🖥️ Escritorio XFCE4 + TigerVNC:** Interfaz gráfica ligera y fluida, optimizada para conexiones móviles locales y directas.
-* **🎮 Godot Engine 4.3 nativo:** Olvídate de capas de emulación lentas. El script instala el motor de videojuegos compilado directamente para Linux ARM64, ofreciendo la máxima velocidad y fluidez posibles en tu dispositivo.
+* **🎮 Godot Engine 4.x nativo:** Olvídate de capas de emulación lentas. El script instala el motor de videojuegos compilado directamente para Linux ARM64, ofreciendo la máxima velocidad y fluidez posibles en tu dispositivo.
 * **🌐 Listo para desarrollo web:** Incluye un entorno completo con Node.js, NPM, Git, VS Code (optimizado) y Firefox para maquetar y probar tus proyectos locales al instante.
 * **🛡️ Renderizado seguro:** Configurado con `llvmpipe` (renderizado por software) para evitar bloqueos por incompatibilidad de controladores gráficos en Android.
 
