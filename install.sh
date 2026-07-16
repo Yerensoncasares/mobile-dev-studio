@@ -1,18 +1,18 @@
 #!/data/data/com.termux/files/usr/bin/bash
 #######################################################
-#  🟢 MOBILE DEV STUDIO - Ultimate VNC Installer v2.0
+#  🟢 MOBILE DEV STUDIO - Ultimate VNC Installer v2.2
 #  
 #  UI Theme: Verdant Cyberpunk (Mint & Lime High-Contrast)
 #  
 #  Features:
 #  - TigerVNC Server (Network exposed & Battery protected)
-#  - Godot 3.3 via Wine/Hangover (Absolute paths fixed)
+#  - Godot Engine 4.3 Native Linux ARM64 Deployment (No Emulators)
 #  - Web Dev Stack (Firefox, VS Code, Node, Git)
 #  - Zero bloat, Bulletproof connection logic
 #######################################################
 
 # ============== CONFIGURATION ==============
-TOTAL_STEPS=10
+TOTAL_STEPS=9
 CURRENT_STEP=0
 
 # ============== VERDANT CYBER PALETTE ==============
@@ -85,13 +85,12 @@ show_banner() {
     cat << 'BANNER'
     ⚡▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄⚡
       █                                        █
-      █   🚀  MOBILE DEV STUDIO v2.0  🚀       █
-      █      (Wine/Godot + AVNC Edition)       █
+      █   🚀  MOBILE DEV STUDIO v2.2  🚀       █
+      █      (100% ARM64 Native - No Wine)     █
       █                                        █
     ⚡▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⚡
 BANNER
-    echo -e "${NC}"
-    echo -e "         ${MINT}⚡ Environment:${WHITE} Web Dev + Godot 3.3 (Wine)${NC}"
+    echo -e "         ${MINT}⚡ Environment:${WHITE} Web Dev + Native Godot ARM64${NC}"
     echo ""
 }
 
@@ -133,7 +132,7 @@ step_repos() {
     echo ""
     
     install_pkg "x11-repo" "X11 Repository"
-    install_pkg "tur-repo" "TUR Repository (Firefox, VS Code, Wine)"
+    install_pkg "tur-repo" "TUR Repository (Firefox, VS Code)"
 }
 
 # ============== STEP 3: INSTALL TIGERVNC SERVER ==============
@@ -178,38 +177,33 @@ step_apps() {
     install_pkg "wget" "Wget Downloader"
     install_pkg "curl" "cURL Transfer Tool"
     install_pkg "unzip" "Unzip Extractor"
+    install_pkg "tar" "Tar Extractor"
+    install_pkg "xz-utils" "XZ Utilities"
 }
 
-# ============== STEP 7: INSTALL WINE & GODOT 3.3 ==============
-step_godot_wine() {
+# ============== STEP 7: INSTALL NATIVE GODOT 4.3 (ARM64) ==============
+step_godot_native() {
     update_progress
-    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Establishing Wine Translation Layer...${NC}"
+    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Deploying Native Godot 4 (ARM64 Linux)...${NC}"
     echo ""
     
-    install_pkg "hangover-wine" "Wine Compatibility Layer"
-    install_pkg "hangover-wowbox64" "Box64 Architecture Wrapper"
-    
-    # Global symlinks
-    ln -sf /data/data/com.termux/files/usr/opt/hangover-wine/bin/wine /data/data/com.termux/files/usr/bin/wine
-    ln -sf /data/data/com.termux/files/usr/opt/hangover-wine/bin/winecfg /data/data/com.termux/files/usr/bin/winecfg
-    
-    echo -e "  ${YELLOW}⏳${NC} Building pristine Wine prefix (~/.wine)..."
-    export GALLIUM_DRIVER=llvmpipe
-    WINEPREFIX=~/.wine wineboot --init > /dev/null 2>&1
-    echo -e "  ${LIME}✓${NC} Wine subsystem initialized successfully."
-    
+    # Crear directorio limpio para Godot
     mkdir -p ~/Godot
     cd ~/Godot
     
-    (wget -q --show-progress https://downloads.tuxfamily.org/godotengine/3.3.4/Godot_v3.3.4-stable_win64.exe.zip -O godot.zip > /dev/null 2>&1) &
-    spinner $! "Downloading Godot 3.3.4 Win64..."
+    # Descargar versión estable nativa oficial para Linux ARM64
+    (wget -q https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_arm64.tar.xz > /dev/null 2>&1) &
+    spinner $! "Downloading Godot 4.3 stable (ARM64)..."
     
-    (unzip -o godot.zip > /dev/null 2>&1) &
-    spinner $! "Extracting binary components..."
+    # Descomprimir y configurar ejecutable nativo
+    (tar -xf Godot_v4.3-stable_linux_arm64.tar.xz > /dev/null 2>&1) &
+    spinner $! "Extracting executable package..."
     
-    rm godot.zip 2>/dev/null
-    cd ~
-    echo -e "  ${LIME}✓${NC} Godot Engine mapped at ~/Godot/"
+    mv Godot_v4.3-stable_linux_arm64.arm64 godot4
+    chmod +x godot4
+    rm Godot_v4.3-stable_linux_arm64.tar.xz
+    
+    echo -e "  ${LIME}✓${NC} Godot 4 Native ARM64 binary ready in ~/Godot/godot4"
 }
 
 # ============== STEP 8: CREATE LAUNCHER SCRIPTS ==============
@@ -350,26 +344,16 @@ Type=Application
 Categories=Development;
 EOF
     
-    # Godot 3.3 via Wine
-    cat > ~/Desktop/Godot_3.3.desktop << 'EOF'
+    # Godot 4 Nativo para Linux ARM64
+    USUARIO=$(whoami)
+    cat > ~/Desktop/Godot4.desktop << EOF
 [Desktop Entry]
-Name=Godot 3.3 (Wine)
-Comment=Game Engine via Wine
-Exec=sh -c "cd /data/data/com.termux/files/home/Godot && WINEPREFIX=/data/data/com.termux/files/home/.wine wine Godot_v3.3.4-stable_win64.exe --video-driver GLES2"
+Name=Godot 4.3 (Nativo)
+Comment=Motor de videojuegos nativo ARM64 sin emuladores
+Exec=/data/data/com.termux/files/home/Godot/godot4
 Icon=godot
 Type=Application
 Categories=Development;
-EOF
-    
-    # Wine Config
-    cat > ~/Desktop/Wine_Config.desktop << 'EOF'
-[Desktop Entry]
-Name=Wine Config
-Comment=Windows Settings
-Exec=WINEPREFIX=/data/data/com.termux/files/home/.wine winecfg
-Icon=wine
-Type=Application
-Categories=Settings;
 EOF
     
     # Terminal
@@ -398,7 +382,7 @@ EOF
     echo -e "  ${LIME}✓${NC} All UI shortcuts updated."
 }
 
-# ============== STEP 10: COMPLETION ==============
+# ============== COMPLETION ==============
 show_completion() {
     update_progress
     echo ""
@@ -414,7 +398,7 @@ show_completion() {
 COMPLETE
     echo -e "${NC}"
     
-    echo -e "${WHITE}📱 Tu Mobile Dev Studio está listo y configurado.${NC}"
+    echo -e "${WHITE}📱 Tu Mobile Dev Studio está listo y configurado de forma nativa.${NC}"
     echo ""
     echo -e "${FOREST}════════════════════════════════════════════════════════════════════${NC}"
     echo ""
@@ -426,21 +410,14 @@ COMPLETE
     echo ""
     echo -e "${FOREST}════════════════════════════════════════════════════════════════════${NC}"
     echo ""
-    echo -e "${MINT}📦 HERRAMIENTAS INTEGRADAS:${NC}"
+    echo -e "${MINT}📦 HERRAMIENTAS INTEGRADAS Y LISTAS (NATIVAS ARM64):${NC}"
     echo -e "   • Firefox (Navegador Web)"
     echo -e "   • VS Code (Editor optimizado con GPU bypass)"
-    echo -e "   • Godot 3.3.4 (Engine Windows x64 vía Wine + GLES2)"
-    echo -e "   • Wine Config (Panel de control del prefijo)"
+    echo -e "   • Godot 4.3 Estable (Nativo de Linux ARM64 en ~/Godot)"
     echo -e "   • Git & Node.js (Ecosistema Frontend nativo)"
-    echo -e "   • XFCE4 + TigerVNC (Entorno gráfico expuesto seguro)"
+    echo -e "   • XFCE4 + TigerVNC (Entorno gráfico listo)"
     echo ""
     echo -e "${TEAL}════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "${YELLOW}💡 TIPS DE RENDIMIENTO MÓVIL:${NC}"
-    echo -e "   1. El script tiene activo el Wake-Lock para evitar cierres fatales.${NC}"
-    echo -e "   2. La conexión vía AVNC ahora no requiere túneles locales molestos.${NC}"
-    echo -e "   3. Al abrir Godot por primera vez, dale un momento; Wine estará${NC}"
-    echo -e "      mapeando las llamadas a las librerías dinámicas del sistema.${NC}"
     echo ""
 }
 
@@ -449,9 +426,9 @@ main() {
     show_banner
     
     echo -e "${WHITE}  Este instalador montará un entorno de desarrollo completo${NC}"
-    echo -e "${WHITE}  enfocado en Web Dev y modelado en Godot 3.3 por Wine.${NC}"
+    echo -e "${WHITE}  enfocado en Web Dev y preparará la base nativa para Godot 4.3 ARM64.${NC}"
     echo ""
-    echo -e "${GRAY}  Tiempo estimado: 10-15 minutos (dependiendo de tu ancho de banda)${NC}"
+    echo -e "${GRAY}  Tiempo estimado: 6-10 minutos (dependiendo de tu ancho de banda)${NC}"
     echo ""
     echo -e "${YELLOW}  Presiona Enter para iniciar el despliegue, o Ctrl+C para abortar...${NC}"
     read
@@ -463,7 +440,7 @@ main() {
     step_desktop
     step_audio
     step_apps
-    step_godot_wine
+    step_godot_native
     step_launchers
     step_shortcuts
     show_completion
