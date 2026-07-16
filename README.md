@@ -1,7 +1,6 @@
-```markdown
 # 🎨 Mobile Dev Studio v2.2
 
-🚀 Un entorno de escritorio ultraligero en Termux (XFCE4 + TigerVNC) optimizado exclusivamente para desarrollo web y Godot Engine 4.3 de forma 100% nativa (ARM64). Sin emuladores, con el máximo rendimiento móvil, mayor duración de batería y libre de sobrecalentamientos.
+🚀 Un entorno de escritorio ultraligero en Termux (XFCE4 + TigerVNC) optimizado exclusivamente para desarrollo web y Godot Engine 4.x de forma 100% nativa (ARM64). Sin emuladores, con el máximo rendimiento móvil, mayor duración de batería y libre de sobrecalentamientos.
 
 ---
 
