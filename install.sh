@@ -1,18 +1,19 @@
 #!/data/data/com.termux/files/usr/bin/bash
 #######################################################
-#  🟢 MOBILE DEV STUDIO - Ultimate VNC Installer v2.2
+#  🟢 MOBILE DEV STUDIO - Ultimate VNC Installer v3.1
 #  
 #  UI Theme: Verdant Cyberpunk (Mint & Lime High-Contrast)
 #  
 #  Features:
 #  - TigerVNC Server (Network exposed & Battery protected)
-#  - Godot Engine 4.3 Native Linux ARM64 Deployment (No Emulators)
-#  - Web Dev Stack (Firefox, VS Code, Node, Git)
-#  - Zero bloat, Bulletproof connection logic
+#  - Web Dev Stack (Node.js, Git, VS Code, Firefox)
+#  - Local AI Copilot Engine (Ollama + Qwen Coder Sandbox)
+#  - Custom Zsh Shell Injection (OhMyZsh Automated Setup)
+#  - Categorized Creative & System Tools (Audacity, mtPaint, htop, ePDFView)
 #######################################################
 
 # ============== CONFIGURATION ==============
-TOTAL_STEPS=9
+TOTAL_STEPS=12
 CURRENT_STEP=0
 
 # ============== VERDANT CYBER PALETTE ==============
@@ -85,20 +86,19 @@ show_banner() {
     cat << 'BANNER'
     ⚡▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄⚡
       █                                        █
-      █   🚀  MOBILE DEV STUDIO v2.2  🚀       █
-      █      (100% ARM64 Native - No Wine)     █
+      █   🚀  MOBILE DEV STUDIO v3.1  🚀       █
+      █     (Categorized Tools + AI Sandbox)   █
       █                                        █
     ⚡▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⚡
 BANNER
-    echo -e "         ${MINT}⚡ Environment:${WHITE} Web Dev + Native Godot ARM64${NC}"
+    echo -e "${NC}"
+    echo -e "         ${MINT}⚡ Environment:${WHITE} Web Frontend + Local AI Workspace${NC}"
     echo ""
 }
 
-# ============== DEVICE DETECTION ==============
 detect_device() {
     echo -e "${MINT}[*] Analyzing Android Environment...${NC}"
     echo ""
-    
     DEVICE_MODEL=$(getprop ro.product.model 2>/dev/null || echo "Unknown")
     DEVICE_BRAND=$(getprop ro.product.brand 2>/dev/null || echo "Unknown")
     ANDROID_VERSION=$(getprop ro.build.version.release 2>/dev/null || echo "Unknown")
@@ -107,123 +107,153 @@ detect_device() {
     echo -e "  ${LIME}📱${NC} Core Device: ${WHITE}${DEVICE_BRAND} ${DEVICE_MODEL}${NC}"
     echo -e "  ${LIME}🤖${NC} OS Kernel:   ${WHITE}Android ${ANDROID_VERSION}${NC}"
     echo -e "  ${LIME}⚙️${NC}  Processor:  ${WHITE}${CPU_ABI} (ARM64 Native)${NC}"
-    echo -e "  ${LIME}🧪${NC} GPU Shield:  ${WHITE}Forced Software Rendering (llvmpipe)${NC}"
     echo ""
     sleep 1
 }
 
-# ============== STEP 1: UPDATE SYSTEM ==============
+# ============== STEPS 1 - 2: ENVIRONMENT SYNC ==============
 step_update() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Syncing Core Repositories...${NC}"
     echo ""
-    
     (yes | pkg update -y > /dev/null 2>&1) &
     spinner $! "Updating repository index..."
-    
     (yes | pkg upgrade -y > /dev/null 2>&1) &
     spinner $! "Upgrading core system packages..."
 }
 
-# ============== STEP 2: INSTALL REPOSITORIES ==============
 step_repos() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Injecting Extra Repositories...${NC}"
     echo ""
-    
     install_pkg "x11-repo" "X11 Repository"
-    install_pkg "tur-repo" "TUR Repository (Firefox, VS Code)"
+    install_pkg "tur-repo" "TUR Repository (Firefox, VS Code, Wine)"
 }
 
-# ============== STEP 3: INSTALL TIGERVNC SERVER ==============
+# ============== STEP 3: DIRECTORIES ==============
+step_structure() {
+    update_progress
+    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Structuring Workspace Categories...${NC}"
+    echo ""
+    (mkdir -p ~/Desktop ~/Godot ~/Automation ~/Scripts) &
+    spinner $! "Creating categorical directories..."
+}
+
+# ============== STEPS 4 - 6: GRAPHICS & AUDIO ==============
 step_vnc() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Deploying TigerVNC Protocol...${NC}"
     echo ""
-    
     install_pkg "tigervnc" "TigerVNC Display Server"
 }
 
-# ============== STEP 4: INSTALL DESKTOP ==============
 step_desktop() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Erecting XFCE4 Graphic Interface...${NC}"
     echo ""
-    
     install_pkg "xfce4" "XFCE4 Desktop Environment"
     install_pkg "xfce4-terminal" "XFCE4 Terminal"
     install_pkg "thunar" "Thunar File Manager"
 }
 
-# ============== STEP 5: INSTALL AUDIO ==============
 step_audio() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Linking PulseAudio Framework...${NC}"
     echo ""
-    
     install_pkg "pulseaudio" "PulseAudio Sound Server"
 }
 
-# ============== STEP 6: INSTALL DEV APPS ==============
+# ============== STEP 7: COMPILING COMPREHENSIVE APPS STACK ==============
 step_apps() {
     update_progress
-    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Compiling Dev Tools Stack...${NC}"
+    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Compiling Dev & Creative Tools Stack...${NC}"
     echo ""
     
+    # Core Dev
     install_pkg "firefox" "Firefox Browser"
     install_pkg "code-oss" "VS Code Editor"
     install_pkg "git" "Git Version Control"
-    install_pkg "nodejs" "Node.js (NPM Engine)"
+    install_pkg "nodejs" "Node.js Engine"
+    
+    # Solicitados e indispensables del sistema
+    install_pkg "htop" "Htop Performance Monitor"
+    install_pkg "mtpaint" "mtPaint Pixel-Art Editor"
+    install_pkg "audacity" "Audacity Audio Studio"
+    install_pkg "epdfview" "ePDFView Lightweight Reader"
+    install_pkg "p7zip" "7-Zip Extraction Engine"
+    
+    # Utilidades base
     install_pkg "wget" "Wget Downloader"
-    install_pkg "curl" "cURL Transfer Tool"
+    install_pkg "curl" "cURL Tool"
     install_pkg "unzip" "Unzip Extractor"
-    install_pkg "tar" "Tar Extractor"
-    install_pkg "xz-utils" "XZ Utilities"
+    install_pkg "zsh" "Zsh Shell"
 }
 
-# ============== STEP 7: INSTALL NATIVE GODOT 4.3 (ARM64) ==============
-step_godot_native() {
+# ============== STEP 8: OHMYZSH INJECTION ==============
+step_zsh_setup() {
     update_progress
-    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Deploying Native Godot 4 (ARM64 Linux)...${NC}"
+    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Injecting OhMyZsh Framework...${NC}"
     echo ""
-    
-    # Crear directorio limpio para Godot
-    mkdir -p ~/Godot
-    cd ~/Godot
-    
-    # Descargar versión estable nativa oficial para Linux ARM64
-    (wget -q https://downloads.tuxfamily.org/godotengine/4.3/Godot_v4.3-stable_linux_arm64.tar.xz > /dev/null 2>&1) &
-    spinner $! "Downloading Godot 4.3 stable (ARM64)..."
-    
-    # Descomprimir y configurar ejecutable nativo
-    (tar -xf Godot_v4.3-stable_linux_arm64.tar.xz > /dev/null 2>&1) &
-    spinner $! "Extracting executable package..."
-    
-    mv Godot_v4.3-stable_linux_arm64.arm64 godot4
-    chmod +x godot4
-    rm Godot_v4.3-stable_linux_arm64.tar.xz
-    
-    echo -e "  ${LIME}✓${NC} Godot 4 Native ARM64 binary ready in ~/Godot/godot4"
+    if [ ! -d ~/.oh-my-zsh ]; then
+        (sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended > /dev/null 2>&1) &
+        spinner $! "Downloading and configuring OhMyZsh..."
+        chsh -s zsh
+    else
+        echo -e "  ${LIME}✓${NC} OhMyZsh environment active."
+    fi
 }
 
-# ============== STEP 8: CREATE LAUNCHER SCRIPTS ==============
+# ============== STEP 9: OLLAMA ARCHITECTURE ==============
+step_ai_setup() {
+    update_progress
+    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Establishing Local AI Assistant Architecture...${NC}"
+    echo ""
+    install_pkg "ollama" "Ollama AI Engine"
+    
+    echo -e "  ${YELLOW}⚡${NC} Activating background engine for model sync..."
+    ollama serve > /dev/null 2>&1 &
+    local server_pid=$!
+    sleep 3
+    
+    echo -e "  ${YELLOW}📦${NC} Pulling lightweight coding brain (Qwen2.5-Coder:1.5b)..."
+    ollama pull qwen2.5-coder:1.5b
+    
+    kill $server_pid 2>/dev/null
+    wait $server_pid 2>/dev/null
+    pkill -9 -f "ollama" 2>/dev/null
+}
+
+# ============== STEP 10: WINE SANDBOX ==============
+step_wine_setup() {
+    update_progress
+    echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Establishing Wine Translation Layer...${NC}"
+    echo ""
+    install_pkg "hangover-wine" "Wine Compatibility Layer"
+    install_pkg "hangover-wowbox64" "Box64 Architecture Wrapper"
+    
+    ln -sf /data/data/com.termux/files/usr/opt/hangover-wine/bin/wine /data/data/com.termux/files/usr/bin/wine
+    ln -sf /data/data/com.termux/files/usr/opt/hangover-wine/bin/winecfg /data/data/com.termux/files/usr/bin/winecfg
+    
+    echo -e "  ${YELLOW}⏳${NC} Building Wine prefix (~/.wine)..."
+    export GALLIUM_DRIVER=llvmpipe
+    WINEPREFIX=~/.wine wineboot --init > /dev/null 2>&1
+}
+
+# ============== STEP 11: SCRIPTS PERSISTENCE ==============
 step_launchers() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Generating Execution Launchers...${NC}"
     echo ""
     
-    # Secure GPU config
     mkdir -p ~/.config
     cat > ~/.config/devstudio-gpu.sh << 'GPUEOF'
-# Mobile DevStudio - Stable VNC Rendering Config
 export GALLIUM_DRIVER=llvmpipe
 export MESA_LOADER_DRIVER_OVERRIDE=swrast
 export MESA_NO_ERROR=1
 export LIBGL_ALWAYS_SOFTWARE=1
 GPUEOF
-    echo -e "  ${LIME}✓${NC} GPU Safety Shield generated."
-    
-    # Configure VNC startup environment
+    chmod +x ~/.config/devstudio-gpu.sh
+
     mkdir -p ~/.vnc
     cat > ~/.vnc/xstartup << 'XSTARTEOF'
 #!/bin/sh
@@ -233,57 +263,32 @@ source ~/.config/devstudio-gpu.sh 2>/dev/null
 startxfce4 > /dev/null 2>&1 &
 XSTARTEOF
     chmod +x ~/.vnc/xstartup
-    echo -e "  ${LIME}✓${NC} Graphic environment link set."
     
-    # Main Desktop Launcher
-    cat > ~/start-devstudio.sh << 'LAUNCHEREOF'
+    # START SCRIPT (Con bypass silencioso para el servidor de IA)
+    cat > ~/Scripts/start-devstudio.sh << 'LAUNCHEREOF'
 #!/data/data/com.termux/files/usr/bin/bash
 echo ""
-echo -e "\033[1;32m🚀 Activating Mobile DevStudio Core VNC System...\033[0m"
-echo ""
-source ~/.config/devstudio-gpu.sh 2>/dev/null
-
-# Wake-Lock
-echo -e "🔒 \033[1;36mAcquiring Wake-Lock (Defending backend process from Android OS)...\033[0m"
+echo -e "\033[1;32m🚀 Activating Mobile DevStudio Core System v3.1...\033[0m"
 termux-wake-lock
-
-# Flush ghosts
-echo "🔄 Clearing obsolete sockets and sessions..."
 vncserver -kill :1 >/dev/null 2>&1
 pkill -9 -f "xfce" 2>/dev/null
 pkill -9 -f "dbus" 2>/dev/null
+pkill -9 -f "ollama" 2>/dev/null
 
-# Password failsafe
-if [ ! -f ~/.vnc/passwd ]; then
-    echo ""
-    echo -e "\033[1;32m 🔒 SECURITY SETUP: DEFINE YOUR VNC PASSWORD \033[0m"
-    echo ""
-    vncpasswd
-fi
-
-chmod 600 ~/.vnc/passwd 2>/dev/null
-
-# Audio
 unset PULSE_SERVER
 pulseaudio --kill 2>/dev/null
 sleep 0.5
-echo "🔊 Routing PulseAudio stream tunnels..."
 pulseaudio --start --exit-idle-time=-1
 sleep 1
 pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 2>/dev/null
 export PULSE_SERVER=127.0.0.1
 
-# Exposed VNC
-echo -e "📺 \033[1;32mSpawning TigerVNC Canvas on Port :1 (Network Exposed)...\033[0m"
-vncserver :1 -geometry 1280x720 -depth 24 -localhost no
+echo "🤖 Initializing Local AI Assistant Engine in silent mode..."
+ollama serve > /dev/null 2>&1 &
 sleep 2
 
-# Check
-if pgrep -x "Xvnc" > /dev/null; then
-    echo -e "  \033[1;32m✓ Server status: ONLINE and stable.\033[0m"
-else
-    echo -e "  \033[0;31m✗ ERROR: Host crashed. Inspect logs at ~/.vnc/*.log\033[0m"
-fi
+vncserver :1 -geometry 1280x720 -depth 24 -localhost no
+sleep 2
 
 MY_IP=$(ifconfig wlan0 2>/dev/null | grep "inet " | awk '{print $2}')
 if [ -z "$MY_IP" ]; then MY_IP="[Your-Phone-IP]"; fi
@@ -291,38 +296,52 @@ if [ -z "$MY_IP" ]; then MY_IP="[Your-Phone-IP]"; fi
 echo ""
 echo -e "\033[0;32m🟢 ══════════════════════════════════════════════ 🟢\033[0m"
 echo -e "  \033[1;36m🖥️  DEV STUDIO ACTIVE WORKSTATION\033[0m"
-echo -e "  \033[1;37m👉 Remote IP:\033[0m \033[1;32m$MY_IP\033[0m"
-echo -e "  \033[1;37m👉 Port:\033[0m      \033[1;32m5901 (Display :1)\033[0m"
-echo -e "  \033[1;37m👉 Client App:\033[0m \033[1;36mAVNC / bVNC\033[0m"
+echo -e "  \033[1;37m👉 IP:\033[0m \033[1;32m$MY_IP :5901\033[0m"
+echo -e "  \033[1;37m👉 AI:\033[0m \033[1;33mollama run qwen2.5-coder:1.5b\033[0m"
 echo -e "\033[0;32m═════════════════════════════════════════════════\033[0m"
-echo ""
 LAUNCHEREOF
-    chmod +x ~/start-devstudio.sh
-    echo -e "  ${LIME}✓${NC} Created ~/start-devstudio.sh"
-    
-    # Desktop Shutdown Script
-    cat > ~/stop-devstudio.sh << 'STOPEOF'
+    chmod +x ~/Scripts/start-devstudio.sh
+    ln -sf ~/Scripts/start-devstudio.sh ~/start-devstudio.sh
+
+    # STOP SCRIPT
+    cat > ~/Scripts/stop-devstudio.sh << 'STOPEOF'
 #!/data/data/com.termux/files/usr/bin/bash
-echo "Dismantling Mobile DevStudio environment..."
 vncserver -kill :1 >/dev/null 2>&1
 pkill -9 -f "pulseaudio" 2>/dev/null
 pkill -9 -f "xfce" 2>/dev/null
+pkill -9 -f "ollama" 2>/dev/null
 termux-wake-unlock
 echo "System resting. Wake-Lock released."
 STOPEOF
-    chmod +x ~/stop-devstudio.sh
-    echo -e "  ${LIME}✓${NC} Created ~/stop-devstudio.sh"
+    chmod +x ~/Scripts/stop-devstudio.sh
+    ln -sf ~/Scripts/stop-devstudio.sh ~/stop-devstudio.sh
+
+    # CLEANUP SCRIPT (Cruzado: VNC + Ollama + NPM)
+    cat > ~/Scripts/cleanup.sh << 'CLEANUPEOF'
+#!/bin/bash
+echo "🧹 Iniciando limpieza masiva de mantenimiento..."
+vncserver -kill :1 >/dev/null 2>&1
+pkill -9 -f "ollama" 2>/dev/null
+rm -rf /tmp/.X11-unix/X*
+rm -rf /tmp/.X*-lock
+rm -rf ~/.vnc/*.pid
+rm -rf ~/.vnc/*.log
+rm -rf /tmp/*
+rm -rf ~/.cache/*
+npm cache clean --force 2>/dev/null
+echo "✨ ¡Sistema limpio y purgado al 100%!"
+CLEANUPEOF
+    chmod +x ~/Scripts/cleanup.sh
+    ln -sf ~/Scripts/cleanup.sh ~/cleanup.sh
 }
 
-# ============== STEP 9: CREATE DESKTOP SHORTCUTS ==============
+# ============== STEP 12: SHORTCUTS BY CATEGORIES ==============
 step_shortcuts() {
     update_progress
     echo -e "${MINT}[Step ${CURRENT_STEP}/${TOTAL_STEPS}] Pushing Workspace Shortcuts...${NC}"
     echo ""
     
-    mkdir -p ~/Desktop
-    
-    # Firefox
+    # --- CATEGORÍA 1: DESARROLLO FRONTEND & WEB ---
     cat > ~/Desktop/Firefox.desktop << 'EOF'
 [Desktop Entry]
 Name=Firefox
@@ -333,7 +352,6 @@ Type=Application
 Categories=Network;WebBrowser;
 EOF
     
-    # VS Code
     cat > ~/Desktop/VSCode.desktop << 'EOF'
 [Desktop Entry]
 Name=VS Code
@@ -343,31 +361,70 @@ Icon=code-oss
 Type=Application
 Categories=Development;
 EOF
-    
-    # Godot 4 Nativo para Linux ARM64
-    USUARIO=$(whoami)
-    cat > ~/Desktop/Godot4.desktop << EOF
+
+    # --- CATEGORÍA 2: VIDEOJUEGOS (GODOT ENGINE) ---
+    cat > ~/Desktop/Godot_3.3.desktop << 'EOF'
 [Desktop Entry]
-Name=Godot 4.3 (Nativo)
-Comment=Motor de videojuegos nativo ARM64 sin emuladores
-Exec=/data/data/com.termux/files/home/Godot/godot4
+Name=Godot 3.3 (Wine)
+Comment=Game Engine via Wine
+Exec=sh -c "cd /data/data/com.termux/files/home/Godot && WINEPREFIX=/data/data/com.termux/files/home/.wine wine Godot_v3.3.4-stable_win64.exe --video-driver GLES2"
 Icon=godot
 Type=Application
 Categories=Development;
 EOF
-    
-    # Terminal
-    cat > ~/Desktop/Terminal.desktop << 'EOF'
+
+    cat > ~/Desktop/Wine_Config.desktop << 'EOF'
 [Desktop Entry]
-Name=Terminal
-Comment=XFCE Terminal
-Exec=xfce4-terminal
-Icon=utilities-terminal
+Name=Wine Config
+Comment=Windows Settings
+Exec=WINEPREFIX=/data/data/com.termux/files/home/.wine winecfg
+Icon=wine
 Type=Application
-Categories=System;TerminalEmulator;
+Categories=Settings;
+EOF
+
+    # --- CATEGORÍA 3: MULTIMEDIA Y DISEÑO (NUEVOS!) ---
+    cat > ~/Desktop/Audacity.desktop << 'EOF'
+[Desktop Entry]
+Name=Audacity
+Comment=Audio Editor
+Exec=audacity
+Icon=audacity
+Type=Application
+Categories=AudioVideo;AudioEditing;
+EOF
+
+    cat > ~/Desktop/mtPaint.desktop << 'EOF'
+[Desktop Entry]
+Name=mtPaint
+Comment=Pixel Art Graphic Editor
+Exec=mtpaint
+Icon=mtpaint
+Type=Application
+Categories=Graphics;2DGraphics;
+EOF
+
+    # --- CATEGORÍA 4: PRODUCTIVIDAD Y SISTEMA ---
+    cat > ~/Desktop/PDF_Reader.desktop << 'EOF'
+[Desktop Entry]
+Name=ePDFView
+Comment=Lightweight PDF Document Viewer
+Exec=epdfview
+Icon=document-print
+Type=Application
+Categories=Office;Viewer;
+EOF
+
+    cat > ~/Desktop/Htop_Monitor.desktop << 'EOF'
+[Desktop Entry]
+Name=Htop Monitor
+Comment=Process and Core Monitor
+Exec=xfce4-terminal -e htop
+Icon=utilities-system-monitor
+Type=Application
+Categories=System;
 EOF
     
-    # File Manager
     cat > ~/Desktop/Files.desktop << 'EOF'
 [Desktop Entry]
 Name=Files
@@ -379,72 +436,28 @@ Categories=System;
 EOF
 
     chmod +x ~/Desktop/*.desktop 2>/dev/null
-    echo -e "  ${LIME}✓${NC} All UI shortcuts updated."
+    echo -e "  ${LIME}✓${NC} Shortcuts organized on Desktop."
 }
 
-# ============== COMPLETION ==============
-show_completion() {
-    update_progress
-    echo ""
-    echo -e "${LIME}"
-    cat << 'COMPLETE'
-    ⚡▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀⚡
-      █                                                               █
-      █         ✅  CORE DEPLOYMENT SUCCESSFUL!  ✅                    █
-      █                                                               █
-      █         🎉 100% - Studio Ready & Highly Optimized! 🎉          █
-      █                                                               █
-    ⚡▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄⚡
-COMPLETE
-    echo -e "${NC}"
-    
-    echo -e "${WHITE}📱 Tu Mobile Dev Studio está listo y configurado de forma nativa.${NC}"
-    echo ""
-    echo -e "${FOREST}════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "${WHITE}🚀 PARA INICIAR EL ENTORNO GRÁFICO:${NC}"
-    echo -e "   ${LIME}bash ~/start-devstudio.sh${NC}"
-    echo ""
-    echo -e "${WHITE}🛑 PARA APAGAR EL ENTORNO:${NC}"
-    echo -e "   ${LIME}bash ~/stop-devstudio.sh${NC}"
-    echo ""
-    echo -e "${FOREST}════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-    echo -e "${MINT}📦 HERRAMIENTAS INTEGRADAS Y LISTAS (NATIVAS ARM64):${NC}"
-    echo -e "   • Firefox (Navegador Web)"
-    echo -e "   • VS Code (Editor optimizado con GPU bypass)"
-    echo -e "   • Godot 4.3 Estable (Nativo de Linux ARM64 en ~/Godot)"
-    echo -e "   • Git & Node.js (Ecosistema Frontend nativo)"
-    echo -e "   • XFCE4 + TigerVNC (Entorno gráfico listo)"
-    echo ""
-    echo -e "${TEAL}════════════════════════════════════════════════════════════════════${NC}"
-    echo ""
-}
-
-# ============== MAIN INSTALLATION ==============
+# ============== RUN ==============
 main() {
     show_banner
-    
-    echo -e "${WHITE}  Este instalador montará un entorno de desarrollo completo${NC}"
-    echo -e "${WHITE}  enfocado en Web Dev y preparará la base nativa para Godot 4.3 ARM64.${NC}"
+    echo -e "${WHITE}  Iniciando instalación definitiva con suite de diseño y monitores...${NC}"
     echo ""
-    echo -e "${GRAY}  Tiempo estimado: 6-10 minutos (dependiendo de tu ancho de banda)${NC}"
-    echo ""
-    echo -e "${YELLOW}  Presiona Enter para iniciar el despliegue, o Ctrl+C para abortar...${NC}"
-    read
-    
     detect_device
     step_update
     step_repos
+    step_structure
     step_vnc
     step_desktop
     step_audio
     step_apps
-    step_godot_native
+    step_zsh_setup
+    step_ai_setup
+    step_wine_setup
     step_launchers
     step_shortcuts
-    show_completion
+    echo -e "\n${LIME}¡PROCESO COMPLETADO EXITOSAMENTE! Corre 'bash ~/start-devstudio.sh' para arrancar.${NC}\n"
 }
 
-# ============== RUN ==============
 main
