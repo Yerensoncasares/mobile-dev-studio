@@ -4,10 +4,12 @@
 #  
 #  UI Theme: Verdant Cyberpunk (Mint & Lime)
 #  
-#  Edición Especial para TV:
+#  Edición Especial para TV & Termux Nativo:
 #  - Cambiado Termux-X11 por TigerVNC para visualización remota en TV.
 #  - Estructura limpia de directorios en raíz (Projects, Automation, Apps_Linux).
-#  - Instalación y parche dinámico de Godot v4.7.1 Estable ARM64.
+#  - Instalación de Godot Nativo desde repositorios Termux.
+#  - Integración de Firefox, GIMP, Audacity y Termux API nativos.
+#  - Entorno Wine/Box64 conservado para compatibilidad externa.
 #  - Scripts únicos de control mapeados directamente en la raíz (~).
 #######################################################
 
@@ -172,14 +174,14 @@ step_audio() {
 step_base_utils() {
     update_progress
     echo -e "${MINT}[*] Cargando Herramientas del Sistema...${NC}"
+    install_pkg "termux-api" "Termux API Core"
     install_pkg "firefox" "Firefox Browser"
     install_pkg "git" "Git Engine"
     install_pkg "wget" "Descargador Wget"
     install_pkg "curl" "cURL Transfer"
-    install_pkg "file" "Anclaje de Tipos ELF"
+    install_pkg "file" "Anclaje de Tipos"
     install_pkg "unzip" "Extractor ZIP"
     install_pkg "p7zip" "Extractor 7-Zip Core"
-    install_pkg "termux-elf-cleaner" "Limpiador de Enlaces Dinámicos ELF"
     install_pkg "zsh" "Zsh Shell"
 }
 
@@ -223,40 +225,28 @@ step_editors() {
     install_pkg "geany" "Geany Integrated Editor"
 }
 
-# ============== PASO 12: INSTALACIÓN CORREGIDA GODOT v4.7.1 ESTABLE NATIVO ==============
+# ============== PASO 12: INSTALACIÓN GODOT NATIVO TERMUX ==============
 step_godot() {
     update_progress
-    echo -e "${MINT}[*] Desplegando Godot Engine v4.7.1 Estable (Nativo ARM64)...${NC}"
-    
-    local GODOT_URL="https://github.com/godotengine/godot/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.arm64.zip"
-    local GODOT_ZIP="/tmp/godot_4.7.1.zip"
-    local TARGET_BIN="/data/data/com.termux/files/home/Godot/Godot_v4.7.1-stable_linux.arm64"
-    
-    echo -e "  ${YELLOW}⚡${NC} Bajando binario oficial desde servidores de Godot..."
-    (wget -q -O $GODOT_ZIP "$GODOT_URL" > /dev/null 2>&1) &
-    spinner $! "Descargando paquete Godot..."
-    
-    echo -e "  ${YELLOW}⚡${NC} Descomprimiendo en el directorio definitivo..."
-    unzip -o $GODOT_ZIP -d /tmp/ > /dev/null 2>&1
-    mv /tmp/Godot_v4.7.1-stable_linux.arm64 $TARGET_BIN 2>/dev/null
-    chmod +x $TARGET_BIN
-    
-    echo -e "  ${YELLOW}⚡${NC} Parchando enlaces dinámicos para entorno Termux..."
-    termux-elf-cleaner $TARGET_BIN > /dev/null 2>&1
-    
-    rm -f $GODOT_ZIP
+    echo -e "${MINT}[*] Configurando Godot Engine (Nativo Termux)...${NC}"
+    install_pkg "godot" "Godot Engine"
+    echo -e "  ${LIME}✓${NC} Godot nativo instalado vía repositorios Termux."
 }
 
-# ============== PASO 13: DISEÑO DE SPRITES Y PIXEL ART ==============
+# ============== PASO 13: DISEÑO DE IMAGEN Y PIXEL ART ==============
 step_graphics() {
     update_progress
+    echo -e "${MINT}[*] Instalando Suite de Gráficos...${NC}"
     install_pkg "libresprite" "LibreSprite Pixel Art Editor"
+    install_pkg "gimp" "GIMP Image Editor"
     install_pkg "imagemagick" "ImageMagick CLI Suite"
 }
 
 # ============== PASO 14: ESTUDIO DE AUDIO Y CÓDECS MULTIMEDIA ==============
 step_media() {
     update_progress
+    echo -e "${MINT}[*] Instalando Herramientas de Audio y Multimedia...${NC}"
+    install_pkg "audacity" "Audacity Audio Editor"
     install_pkg "tenacity" "Tenacity Audio Workstation"
     install_pkg "mpv" "MPV Media Player"
     install_pkg "ffmpeg" "FFmpeg Processing Core"
@@ -265,9 +255,9 @@ step_media() {
 # ============== PASO 15: ENTRAMADO WINE + CONTROLADORES VNC TV ==============
 step_wine_launchers() {
     update_progress
-    echo -e "${MINT}[*] Ajustando Wine y Escribiendo Scripts de Lanzamiento Remoto...${NC}"
+    echo -e "${MINT}[*] Ajustando Wine, Box64 y Escribiendo Scripts de Lanzamiento Remoto...${NC}"
     
-    # Configuración de Wine
+    # Configuración de compatibilidad (Wine/Box64)
     (pkg remove wine-stable -y > /dev/null 2>&1) & spinner $! "Limpiando rastros legacy..."
     install_pkg "hangover-wine" "Wine Translator"
     install_pkg "hangover-wowbox64" "Box64 Integration"
@@ -377,13 +367,22 @@ Type=Application
 Categories=Development;
 EOF
 
-    cat > ~/Desktop/Godot_v4.7.1.desktop << 'EOF'
+    cat > ~/Desktop/Godot_Nativo.desktop << 'EOF'
 [Desktop Entry]
-Name=Godot 4.7.1 Nativo
-Exec=sh -c "source ~/.config/devlab-gpu.sh && /data/data/com.termux/files/home/Godot/Godot_v4.7.1-stable_linux.arm64 --rendering-driver opengl3"
+Name=Godot 4.0.4 Nativo
+Exec=sh -c "source ~/.config/devlab-gpu.sh && godot"
 Icon=godot
 Type=Application
 Categories=Development;
+EOF
+
+    cat > ~/Desktop/GIMP.desktop << 'EOF'
+[Desktop Entry]
+Name=GIMP
+Exec=gimp
+Icon=gimp
+Type=Application
+Categories=Graphics;
 EOF
 
     cat > ~/Desktop/LibreSprite.desktop << 'EOF'
@@ -393,6 +392,15 @@ Exec=libresprite
 Icon=libresprite
 Type=Application
 Categories=Graphics;
+EOF
+
+    cat > ~/Desktop/Audacity.desktop << 'EOF'
+[Desktop Entry]
+Name=Audacity
+Exec=audacity
+Icon=audacity
+Type=Application
+Categories=AudioVideo;
 EOF
 
     cat > ~/Desktop/Tenacity.desktop << 'EOF'
